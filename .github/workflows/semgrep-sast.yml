@@ -20,7 +20,7 @@ jobs:
         run: |
           semgrep scan \
             --config="p/owasp-top-ten" \
-            --config="custom-rules.yaml" \
+            --config="custom-rules.yml" \
             --json -o semgrep-report.json
 
       - name: Upload Semgrep Report

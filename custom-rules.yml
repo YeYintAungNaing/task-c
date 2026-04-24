@@ -11,3 +11,21 @@ rules:
     severity: ERROR
     languages:
       - python
+
+  - id: custom-hardcoded-secrets-scan-rule
+    patterns:
+      - pattern-either:
+          - pattern: app.$PROP = "..."
+          - pattern: app.config["$PROP"] = "..."
+          
+      - metavariable-regex:
+          metavariable: $PROP
+          regex: (?i).*(key|secret|api).*
+          
+    message: |
+      Hardcoded sensitive credential detected. 
+      The property '$PROP' matches restricted keywords (key, secret, api). 
+      Values must be loaded dynamically (e.g., os.environ.get('$PROP')).
+    severity: ERROR
+    languages:
+      - python
