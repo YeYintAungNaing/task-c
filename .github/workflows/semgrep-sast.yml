@@ -21,7 +21,7 @@ jobs:
           semgrep scan \
             --config="p/owasp-top-ten" \
             --config="custom-rules.yml" \
-            --json -o semgrep-report.json
+            --json -o semgrep-report.json --error
 
       - name: Upload Semgrep Report
         uses: actions/upload-artifact@v4
