@@ -1,0 +1,28 @@
+name: TASK_C Automated SAST using Semgrep
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  security-scan:
+    name: Semgrep Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Semgrep
+        run: pip install semgrep
+      - name: Run Semgrep and Export JSON
+        run: |
+          semgrep scan --config="p/owasp-top-ten" --json -o semgrep-report.json
+
+      - name: Upload Semgrep Report
+        uses: actions/upload-artifact@v4
+        if: always() 
+        with:
+          name: semgrep-audit-report
+          path: semgrep-report.json
