@@ -18,7 +18,10 @@ jobs:
         run: pip install semgrep
       - name: Run Semgrep and Export JSON
         run: |
-          semgrep scan --config="p/owasp-top-ten" --json -o semgrep-report.json
+          semgrep scan \
+            --config="p/owasp-top-ten" \
+            --config="custom-rules.yaml" \
+            --json -o semgrep-report.json
 
       - name: Upload Semgrep Report
         uses: actions/upload-artifact@v4

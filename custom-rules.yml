@@ -1,0 +1,13 @@
+rules:
+  - id: custom-enforce-secure-cookies-rule
+    patterns:
+      - pattern: $RESP.set_cookie(...)
+      - pattern-not: $RESP.set_cookie(..., secure=True, ...)
+      - pattern-not: $RESP.set_cookie(..., httponly=True, ...)
+    message: |
+      Insecure Cookie Management Detected! 
+      All cookies must be set with `secure=True` and `httponly=True` to prevent 
+      XSS extraction and plaintext network interception.
+    severity: ERROR
+    languages:
+      - python
