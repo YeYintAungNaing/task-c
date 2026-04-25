@@ -30,7 +30,7 @@ jobs:
             --config="custom-rules.yml" \
             --sarif -o semgrep-report.sarif --error
       
-      - name: Print Vulnerability Summary
+      - name: Vulnerability Summary
         if: always() 
         run: |
           echo "### SARIF FINDINGS SUMMARY ###"

@@ -1,5 +1,5 @@
 rules:
-  - id: custom-enforce-secure-cookies-rule
+  - id: custom-rule-enforce-secure-cookies
     patterns:
       - pattern: $RESP.set_cookie(...)
       - pattern-not: $RESP.set_cookie(..., secure=True, ...)
@@ -12,20 +12,22 @@ rules:
     languages:
       - python
 
-  - id: custom-hardcoded-secrets-scan-rule
+  - id: custom-rule-hardcoded-secret-variable
     patterns:
-      - pattern-either:
-          - pattern: app.$PROP = "..."
-          - pattern: app.config["$PROP"] = "..."
-          
+    
+      - pattern: $VAR = "..."
+      
       - metavariable-regex:
-          metavariable: $PROP
-          regex: (?i).*(key|secret|api).*
+          metavariable: $VAR
+          regex: (?i).*(key|secret|token|api|auth|password|cred|pass|private|access).*
           
+      - pattern-not: $VAR = ""  
+      - pattern-not: $VAR = "https://..."
+      
     message: |
-      Hardcoded sensitive credential detected. 
-      The property '$PROP' matches restricted keywords (key, secret, api). 
-      Values must be loaded dynamically (e.g., os.environ.get('$PROP')).
+      Potential hardcoded credential found in variable '$VAR'. 
+      Storing secrets in source code violates secure SDLC practices. 
+      Use environment variables or a secret management service.
     severity: ERROR
     languages:
       - python
