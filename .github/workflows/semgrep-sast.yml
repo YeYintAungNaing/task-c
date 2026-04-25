@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install Semgrep
-        run: pip install semgrep==1.152.0
+        run: pip install semgrep
 
       - name: Run Semgrep and Export SARIF
         run: |
@@ -34,7 +34,7 @@ jobs:
         if: always() 
         run: |
           echo "### SARIF FINDINGS SUMMARY ###"
-          jq -r '(.runs[0].results // []) | group_by(.ruleId) | sort_by(length) | reverse | .[] | "\(length) findings of: \(.[0].ruleId)"' semgrep-report.sarif
+          jq -r '(.runs[0].results // []) | map(select(has("suppressions") | not)) | group_by(.ruleId) | sort_by(length) | reverse | .[] | "\(length) findings of: \(.[0].ruleId)"' semgrep-report.sarif
           echo "##############################"
 
       - name: Upload Semgrep Artifact
