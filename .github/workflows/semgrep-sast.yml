@@ -27,25 +27,6 @@ jobs:
         run: |
           semgrep scan \
             --config="p/owasp-top-ten" \
-            --config="custom-rules.yml" \
-            --sarif -o semgrep-report.sarif --error
+            --config="custom-rules.yml" --error
       
-      - name: Vulnerability Summary
-        if: always() 
-        run: |
-          echo "### SARIF FINDINGS SUMMARY ###"
-          jq -r '(.runs[0].results // []) | group_by(.ruleId) | sort_by(length) | reverse | .[] | "\(length) findings of: \(.[0].ruleId)"' semgrep-report.sarif
-          echo "##############################"
-
-      - name: Upload Semgrep Artifact
-        uses: actions/upload-artifact@v6
-        if: always() 
-        with:
-          name: semgrep-audit-report
-          path: semgrep-report.sarif
-
-      - name: Upload SARIF to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v4
-        if: always() 
-        with:
-          sarif_file: semgrep-report.sarif
+     

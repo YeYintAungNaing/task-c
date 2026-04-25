@@ -8,8 +8,9 @@ def get_db_connection():
     return conn
 
 app = Flask(__name__)
-# nosemgrep
-app.secret_key = 'a-very-secret-and-unique-key'  
+
+# nosemgrep: custom-rule-hardcoded-secret-variable
+app.secret_key = 'a-very-secret-and-unique-key'
 
 @app.route('/')
 def home():
@@ -463,6 +464,6 @@ def admin_panel():
     return html
 
 if __name__ == '__main__':
-    # nosemgrep
-    app.run(debug=True) 
+    # nosemgrep: python.flask.security.audit.debug-enabled.debug-enabled
+    app.run(debug=True)
     
