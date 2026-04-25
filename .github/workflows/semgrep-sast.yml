@@ -10,22 +10,35 @@ jobs:
   security-scan:
     name: Semgrep Scan
     runs-on: ubuntu-latest
+  
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install Semgrep
         run: pip install semgrep
-      - name: Run Semgrep and Export JSON
+
+      - name: Run Semgrep and Export SARIF
         run: |
           semgrep scan \
             --config="p/owasp-top-ten" \
             --config="custom-rules.yml" \
-            --json -o semgrep-report.json --error
+            --sarif -o semgrep-report.sarif --error
 
-      - name: Upload Semgrep Report
+      - name: Upload Semgrep Artifact
         uses: actions/upload-artifact@v4
         if: always() 
         with:
           name: semgrep-audit-report
-          path: semgrep-report.json
+          path: semgrep-report.sarif
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() 
+        with:
+          sarif_file: semgrep-report.sarif
