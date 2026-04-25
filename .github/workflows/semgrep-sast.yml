@@ -29,6 +29,13 @@ jobs:
             --config="p/owasp-top-ten" \
             --config="custom-rules.yml" \
             --sarif -o semgrep-report.sarif --error
+      
+      - name: Print Vulnerability Summary
+        if: always() 
+        run: |
+          echo "### SARIF FINDINGS SUMMARY ###"
+          jq -r '(.runs[0].results // []) | group_by(.ruleId) | sort_by(length) | reverse | .[] | "\(length) findings of: \(.[0].ruleId)"' semgrep-report.sarif
+          echo "##############################"
 
       - name: Upload Semgrep Artifact
         uses: actions/upload-artifact@v4
