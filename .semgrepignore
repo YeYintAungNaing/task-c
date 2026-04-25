@@ -1,0 +1,6 @@
+# Ignore binary database files
+*.db
+
+# Ignore local environment artifacts for local scan
+venv/
+__pycache__/
